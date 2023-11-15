@@ -28,8 +28,16 @@
   <v-app-bar flat class="border-b">
     <v-app-bar-nav-icon @click="isDrawerOpen = !isDrawerOpen"></v-app-bar-nav-icon>
     <v-app-bar-title>
-      Lar Cooperativa
+      <v-row>
+        <v-col cols="auto">
+          <v-img :width="40" aspect-ratio="16/9" cover src="../../assets/LogoLar.png"></v-img>
+        </v-col>
+        <v-col>
+          <span class="d-none d-md-block">Cooperativa Agroindustrial</span>
+        </v-col>
+      </v-row>
     </v-app-bar-title>
+
 
     <template #append>
       <v-menu>
