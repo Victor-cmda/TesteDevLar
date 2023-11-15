@@ -2,48 +2,25 @@
   <v-navigation-drawer v-model="isDrawerOpen">
     <v-list>
 
-      <v-list-subheader>MyApp</v-list-subheader>
+
+      <v-container>
+        <v-row justify="center">
+          <v-col cols="auto">
+            <v-img :width="70" aspect-ratio="16/9" cover src="../../assets/LogoLar.png"></v-img>
+          </v-col>
+        </v-row>
+      </v-container>
+
 
       <v-list-item prepend-icon="mdi-home" to="home">Home</v-list-item>
 
-      <v-list-group value="Clients">
-        <template #activator="{ props }">
-          <v-list-item v-bind="props" prepend-icon="mdi-account-multiple-outline" title="Clientes">
-          </v-list-item>
-        </template>
-        <v-list-item prepend-icon="mdi-account-group" to="clients">Cadastros</v-list-item>
-      </v-list-group>
 
-      <v-list-group value="Suppliers">
+      <v-list-group value="Person">
         <template #activator="{ props }">
-          <v-list-item v-bind="props" prepend-icon="mdi-briefcase-account-outline" title="Fornecedores">
+          <v-list-item v-bind="props" prepend-icon="mdi-account-multiple-outline" title="Pessoas">
           </v-list-item>
         </template>
-        <v-list-item prepend-icon="mdi-card-account-details" to="suppliers">Cadastros</v-list-item>
-      </v-list-group>
-
-      <v-list-group value="Seller">
-        <template #activator="{ props }">
-          <v-list-item v-bind="props" prepend-icon="mdi-badge-account" title="Vendedor">
-          </v-list-item>
-        </template>
-        <v-list-item prepend-icon="mdi-account-box" to="seller">Cadastros</v-list-item>
-      </v-list-group>
-
-      <v-list-group value="Products">
-        <template #activator="{ props }">
-          <v-list-item v-bind="props" prepend-icon="mdi-package-variant-closed" title="Produtos">
-          </v-list-item>
-        </template>
-        <v-list-item prepend-icon="mdi-package-variant" to="products">Cadastros</v-list-item>
-      </v-list-group>
-
-      <v-list-group value="Budget">
-        <template #activator="{ props }">
-          <v-list-item v-bind="props" prepend-icon="mdi-hand-coin-outline" title="Orçamento">
-          </v-list-item>
-        </template>
-        <v-list-item prepend-icon="mdi-checkbook" to="budget">Cadastros</v-list-item>
+        <v-list-item prepend-icon="mdi-account-multiple-plus" to="person">Cadastros</v-list-item>
       </v-list-group>
 
     </v-list>
@@ -51,7 +28,7 @@
   <v-app-bar flat class="border-b">
     <v-app-bar-nav-icon @click="isDrawerOpen = !isDrawerOpen"></v-app-bar-nav-icon>
     <v-app-bar-title>
-      MyApp
+      Lar Cooperativa
     </v-app-bar-title>
 
     <template #append>

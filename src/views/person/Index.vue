@@ -1,12 +1,9 @@
 <template>
     <v-container>
-
         <v-card flat class="rounded-b-xl elevation-4">
-
-
             <div class="d-flex justify-space-between table-title">
                 <v-card-title>
-                    <h2>Clientes</h2>
+                    <h2>Pessoas</h2>
                 </v-card-title>
 
                 <v-card-title>
@@ -29,10 +26,13 @@
                             Nome
                         </th>
                         <th class="text-left">
-                            Celular
+                            Cpf
                         </th>
                         <th class="text-left">
-                            Cidade
+                            Data de Nascimento
+                        </th>
+                        <th class="text-left">
+                            Ativo
                         </th>
                         <th class="text-left actions-column">
                             Ações
@@ -44,6 +44,7 @@
                         <td class="text-center">{{ item.id }}</td>
                         <td>{{ item.name }}</td>
                         <td>{{ item.celular }}</td>
+                        <td>{{ item.cidade }}</td>
                         <td>{{ item.cidade }}</td>
                         <td>
                             <v-menu>

@@ -13,29 +13,9 @@ const routes = [
         component: () => import('@/views/Home.vue'),
       },
       {
-        path: 'clients',
-        name: 'Clients',
-        component: () => import('@/views/clients/Index.vue'),
-      },
-      {
-        path: 'suppliers',
-        name: 'Suppliers',
-        component: () => import('@/views/suppliers/Index.vue'),
-      },
-      {
-        path: 'seller',
-        name: 'Seller',
-        component: () => import('@/views/seller/Index.vue'),
-      },
-      {
-        path: 'products',
-        name: 'Products',
-        component: () => import('@/views/products/Index.vue'),
-      },
-      {
-        path: 'budget',
-        name: 'Budget',
-        component: () => import('@/views/budget/Index.vue'),
+        path: 'person',
+        name: 'Person',
+        component: () => import('@/views/person/Index.vue'),
       },
     ],
   },
