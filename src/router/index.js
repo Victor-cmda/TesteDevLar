@@ -17,6 +17,11 @@ const routes = [
         name: 'Person',
         component: () => import('@/views/person/Index.vue'),
       },
+      {
+        path: 'telephone',
+        name: 'Telephone',
+        component: () => import('@/views/telephone/Index.vue'),
+      },
     ],
   },
   {

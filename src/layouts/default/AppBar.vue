@@ -22,6 +22,13 @@
         </template>
         <v-list-item prepend-icon="mdi-account-multiple-plus" to="person">Cadastros</v-list-item>
       </v-list-group>
+      <v-list-group value="Telephone">
+        <template #activator="{ props }">
+          <v-list-item v-bind="props" prepend-icon="mdi-phone" title="Telefones">
+          </v-list-item>
+        </template>
+        <v-list-item prepend-icon="mdi-phone-forward" to="telephone">Cadastros</v-list-item>
+      </v-list-group>
 
     </v-list>
   </v-navigation-drawer>

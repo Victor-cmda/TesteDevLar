@@ -3,7 +3,7 @@
         <v-card flat class="rounded-b-xl elevation-4">
             <div class="d-flex justify-space-between table-title">
                 <v-card-title>
-                    <h2>Pessoas</h2>
+                    <h2>Telefones</h2>
                 </v-card-title>
 
                 <v-card-title>
@@ -13,7 +13,7 @@
             </div>
 
             <v-card-title class="table-title">
-                <v-text-field label="Filtrar pessoas" v-model="filter" prepend-icon="mdi-filter-multiple"
+                <v-text-field label="Filtrar telefones" v-model="filter" prepend-icon="mdi-filter-multiple"
                     variant="underlined"></v-text-field>
             </v-card-title>
             <v-table fixed-header>
@@ -23,16 +23,10 @@
                             Id
                         </th>
                         <th class="text-left">
-                            Nome
+                            Número
                         </th>
                         <th class="text-left">
-                            Cpf
-                        </th>
-                        <th class="text-left">
-                            Data de Nascimento
-                        </th>
-                        <th class="text-left">
-                            Ativo
+                            Tipo
                         </th>
                         <th class="text-left actions-column">
                             Ações
@@ -44,8 +38,6 @@
                         <td class="text-center">{{ item.id }}</td>
                         <td>{{ item.name }}</td>
                         <td>{{ item.celular }}</td>
-                        <td>{{ item.cidade }}</td>
-                        <td>{{ item.cidade }}</td>
                         <td>
                             <v-menu>
                                 <template #activator="{ props }">
