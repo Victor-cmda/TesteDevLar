@@ -7,7 +7,7 @@
           <v-btn icon dark @click="close">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title>{{ mode === 'add' ? 'Adicionar Pessoas' : 'Editar Pessoas' }}</v-toolbar-title>
+          <v-toolbar-title>{{ mode === 'add' ? 'Adicionar Telefones' : 'Editar Telefones' }}</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn variant="text" @click="submitForm">
@@ -25,95 +25,27 @@
             <v-list-subheader>Geral</v-list-subheader>
             <v-row>
               <v-col cols="6">
-                <v-card class="equal-height-card" prepend-icon="mdi-calendar-range">
+                <v-card class="equal-height-card" prepend-icon="mdi-phone-incoming">
                   <template v-slot:title>
-                    Data de Nascimento
+                    Número
                   </template>
                   <v-card-text>
-                    <v-menu v-model="menu" :close-on-content-click="false" transition="scale-transition" offset-y
-                      min-width="auto">
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field v-model="personData.dateBirthday" :rules="[rules.required]"
-                          :value="formatDate(personData.dateBirthday)" label="Data Nascimento" readonly v-bind="attrs"
-                          @click="openDatePicker"></v-text-field>
-                      </template>
-                      <v-date-picker v-model="personData.dateBirthday"></v-date-picker>
-                    </v-menu>
+                    <v-text-field label="Número" maxlength="15" :rules="[rules.required]"
+                      v-model="telephoneData.number" @blur="formatPhoneNumber"></v-text-field>
                   </v-card-text>
                 </v-card>
               </v-col>
               <v-col cols="6">
-                <v-card class="equal-height-card" prepend-icon="mdi-list-status">
+                <v-card class="equal-height-card" prepend-icon="mdi-phone-hangup">
                   <template v-slot:title>
-                    Status
+                    Tipo de telefone
                   </template>
                   <v-card-text>
-                    <v-radio-group v-model="personData.active">
-                      <v-radio label="Ativo" :value="true"></v-radio>
-                      <v-radio label="Inativo" :value="false"></v-radio>
+                    <v-radio-group v-model="telephoneData.typeNumber">
+                      <v-radio label="Celular" :value="1"></v-radio>
+                      <v-radio label="Residencial" :value="2"></v-radio>
+                      <v-radio label="Comercial" :value="3"></v-radio>
                     </v-radio-group>
-                  </v-card-text>
-                </v-card>
-              </v-col>
-              <v-col cols="6"><v-text-field label="Nome" maxlength="50" :rules="[rules.required]"
-                  v-model="personData.name"></v-text-field></v-col>
-              <v-col cols="6"><v-text-field label="CPF" maxlength="14" :rules="[rules.required]"
-                  v-model="personData.cpf"></v-text-field></v-col>
-              <v-col cols="12">
-                <v-card >
-                  <div class="d-flex justify-space-between table-title">
-                    <v-card-title>
-                      <h3 >Telefones</h3>
-                    </v-card-title>
-
-                    <v-card-title>
-                      <v-btn @click="" variant="tonal" color="primary">Adicionar</v-btn>
-                      <!-- <Dialog v-model="isDialogOpen" :item="itemToEdit" :mode="mode" @update-list="reloadList" /> -->
-                    </v-card-title>
-                  </div>
-                  <v-card-text>
-                    <v-table fixed-header>
-                      <thead>
-                        <tr>
-                          <th class="text-left">
-                            Número
-                          </th>
-                          <th class="text-left">
-                            Tipo
-                          </th>
-                          <th class="text-left actions-column">
-                            Ações
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="item in personData.telephones" :key="item.id">
-                          <td class="text-center">{{ item.id }}</td>
-                          <td>{{ item.number }}</td>
-                          <td>{{ item.typeNumber }}</td>
-                          <td>
-                            <v-menu>
-                              <template #activator="{ props }">
-                                <v-btn flat v-bind="props" icon class="mr-2">
-                                  <v-icon icon="mdi-dots-vertical"></v-icon>
-                                </v-btn>
-                              </template>
-                              <v-card>
-                                <v-list lines="true" nav>
-                                  <v-list-item>
-                                    <v-btn @click.stop="openConfirmDeleteDialog(item)" prepend-icon="mdi-cog-outline"
-                                      variant="tonal" color="error">
-                                      Excluir
-                                    </v-btn>
-                                    <ConfirmDeleteDialog v-model="isDialogDeleteOpen" @confirm="deleteItem(item)" />
-                                  </v-list-item>
-                                </v-list>
-                              </v-card>
-                            </v-menu>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </v-table>
                   </v-card-text>
                 </v-card>
               </v-col>
@@ -127,7 +59,6 @@
 
 <script>
 import axios from 'axios';
-import { format } from 'date-fns';
 
 export default {
   props: {
@@ -149,32 +80,33 @@ export default {
       activeTab: 'Geral',
       menu: false,
       formattedDate: '',
-      personData: {
+      telephoneData: {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        name: '',
-        cpf: '',
-        dateBirthday: new Date(),
-        active: true,
-        telephones: [
-
-        ]
+        number: '',
+        typeNumber: 1
       },
-      initialPersonData: {
+      initialtelephoneData: {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        name: '',
-        cpf: '',
-        dateBirthday: new Date(),
-        active: true,
-        telephones: [
-
-        ]
+        number: '',
+        typeNumber: 1
       },
       rules: {
-        required: value => !!value || 'Este campo é obrigatório.'
+        required: value => !!value || 'Este campo é obrigatório.',
+        phoneNumber: value => {
+        const pattern = /^\(\d{2}\) \d{4,5}-\d{4}$/;
+        return pattern.test(value) || 'Número de telefone inválido.';
+      },
       }
     };
+  },
+  watch: {
+    item(newVal) {
+      if (this.mode === 'edit' && newVal) {
+        this.telephoneData = { ...newVal };
+      }
+    }
   },
   computed: {
     isOpen: {
@@ -186,28 +118,10 @@ export default {
       },
     },
   },
-  watch: {
-    item(newVal) {
-      if (this.mode === 'edit' && newVal) {
-        this.personData = { ...newVal };
-        if (this.personData.dateBirthday) {
-          this.personData.dateBirthday = new Date(newVal.dateBirthday);
-        }
-      }
-    },
-    'personData.dateBirthday': function (newDate, oldDate) {
-      if (newDate !== oldDate) {
-        this.menu = false;
-      }
-    },
-    'personData.cpf': function (newValue) {
-      this.personData.cpf = this.formatCpf(newValue);
-    }
-  },
   methods: {
-    async addPerson(personData) {
+    async addTelephone(telephoneData) {
       try {
-        const response = await axios.post('http://localhost:5017/api/person', personData);
+        const response = await axios.post('http://localhost:5017/api/telephone', telephoneData);
         console.log(response.data);
         this.$emit('update-list');
         this.close();
@@ -215,51 +129,42 @@ export default {
         console.error(error);
       }
     },
-    async editPerson(personData) {
+    async editTelephone(telephoneData) {
       try {
-        const response = await axios.put('http://localhost:5017/api/person/' + personData.id, personData);
+        const response = await axios.put('http://localhost:5017/api/telephone/' + telephoneData.id, telephoneData);
         console.log(response.data);
         this.$emit('update-list');
         this.close();
       } catch (error) {
         console.error(error);
       }
-    },
-    formatDate(date) {
-      if (!date) return null;
-      const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
-      return new Date(date).toLocaleDateString('pt-BR', options);
-    },
-    openDatePicker() {
-      this.menu = true;
-    },
-    closeDatePicker() {
-      this.menu = false;
     },
     submitForm() {
       if (this.$refs.form.validate()) {
-        const personDataToSend = {
-          ...this.personData,
-          cpf: this.formatCpf(this.personData.cpf),
-          dateBirthday: new Date(this.personData.dateBirthday).toISOString(),
-          telephones: this.personData.telephones || [],
+        const telephoneDataToSend = {
+          ...this.telephoneData,
         };
         if (this.mode === 'add') {
-          this.addPerson(personDataToSend);
+          this.addTelephone(telephoneDataToSend);
         } else {
-          this.editPerson(personDataToSend);
+          this.editTelephone(telephoneDataToSend);
         }
       }
     },
     resetForm() {
-      this.personData = { ...this.initialPersonData };
+      this.telephoneData = { ...this.initialtelephoneData };
     },
-    formatCpf(value) {
-      let cpf = value.replace(/\D/g, '');
-      cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
-      cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
-      cpf = cpf.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-      return cpf;
+    formatPhoneNumber() {
+      let numbers = this.telephoneData.number.replace(/\D/g, '');
+      let formattedNumber;
+
+      if (numbers.length <= 10) { 
+        formattedNumber = numbers.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+      } else { 
+        formattedNumber = numbers.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+      }
+
+      this.telephoneData.number = formattedNumber;
     },
     close() {
       this.isOpen = false;

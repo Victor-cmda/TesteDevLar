@@ -3,7 +3,7 @@
         <v-card flat class="rounded-b-xl elevation-4">
             <div class="d-flex justify-space-between table-title">
                 <v-card-title>
-                    <h2>Pessoas</h2>
+                    <h2>Telefones</h2>
                 </v-card-title>
 
                 <v-card-title>
@@ -24,16 +24,10 @@
                 <thead>
                     <tr>
                         <th class="text-center">
-                            Nome
+                            Número
                         </th>
                         <th class="text-center">
-                            CPF
-                        </th>
-                        <th class="text-center">
-                            Data de Nascimento
-                        </th>
-                        <th class="text-center">
-                            Ativo
+                            Tipo Telefone
                         </th>
                         <th class="text-left actions-column">
                             Ações
@@ -42,15 +36,9 @@
                 </thead>
                 <tbody>
                     <tr v-for="item in filteredData" :key="item.id">
-                        <td class="text-center">{{ item.name }}</td>
-                        <td class="text-center">{{ item.cpf }}</td>
-                        <td class="text-center">{{ formatDate(item.dateBirthday) }}</td>
-                        <td class="text-center"><v-icon color="primary" v-if="item.active">
-                                mdi-check-circle
-                            </v-icon>
-                            <v-icon color="primary" v-else>
-                                mdi-close-circle
-                            </v-icon>
+                        <td class="text-center">{{ item.number }}</td>
+                        <td class="text-center">
+                            {{ item.typeNumber == 1 ? 'Celular' : item.typeNumber == 2 ? 'Residencial' : item.typeNumber == 3 ? 'Comercial' : '' }}
                         </td>
                         <td>
                             <v-menu>
@@ -114,7 +102,7 @@ export default {
                 return;
             }
             try {
-                const response = await axios.delete(`http://localhost:5017/api/person/${item.id}`);
+                const response = await axios.delete(`http://localhost:5017/api/telephone/${item.id}`);
                 this.isDialogDeleteOpen = false;
                 this.reloadList();
             } catch (error) {
@@ -131,8 +119,8 @@ export default {
         async reloadList() {
             this.overlay = true;
             try {
-                const response = await axios.get('http://localhost:5017/api/person');
-                this.persons = response.data;
+                const response = await axios.get('http://localhost:5017/api/telephone');
+                this.telephones = response.data;
             } catch (error) {
                 console.error('Erro ao recarregar a lista:', error);
             } finally {
@@ -146,16 +134,15 @@ export default {
     },
     computed: {
         filteredData() {
-            return this.persons.filter(persons =>
-                persons.name.toLowerCase().includes(this.filter.toLowerCase()) ||
-                persons.cpf.toLowerCase().includes(this.filter.toLowerCase()) ||
-                persons.dateBirthday.toLowerCase().includes(this.filter.toLowerCase())
+            return this.telephones.filter(telephones =>
+                telephones.number.toLowerCase().includes(this.filter.toLowerCase()) ||
+                telephones.typeNumber.toLowerCase().includes(this.filter.toLowerCase())
             );
         }
     },
     data() {
         return {
-            persons: [],
+            telephones: [],
             mode: 'add',
             itemToEdit: null,
             itemToDelete: null,
@@ -173,9 +160,9 @@ export default {
     },
     mounted() {
         this.overlay = true;
-        axios.get('http://localhost:5017/api/person')
+        axios.get('http://localhost:5017/api/telephone')
             .then((response) => {
-                this.persons = response.data;
+                this.telephones = response.data;
             })
             .catch((error) => {
                 console.error('Erro ao buscar dados:', error);
