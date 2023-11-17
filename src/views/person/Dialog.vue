@@ -26,7 +26,17 @@
           <v-row>
             <v-col cols="6"><v-text-field label="Nome" v-model="personData.Name"></v-text-field></v-col>
             <v-col cols="6"><v-text-field label="CPF" v-model="personData.Cpf"></v-text-field></v-col>
-            <v-col cols="6"><v-text-field label="Data Nascimento" v-model="personData.DateOfBirth"></v-text-field></v-col>
+            <v-col cols="6">
+              <v-menu v-model="menu" :close-on-content-click="false" transition="scale-transition" offset-y
+                min-width="auto">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field v-model="personData.DateOfBirth" :value="formatDate(personData.DateOfBirth)"
+                    label="Data Nascimento" readonly v-bind="attrs"
+                    @click="openDatePicker"></v-text-field>
+                </template>
+                <v-date-picker v-model="personData.DateOfBirth"></v-date-picker>
+              </v-menu>
+            </v-col>
             <v-col cols="6"><v-text-field label="Ativo" v-model="personData.Active"></v-text-field></v-col>
           </v-row>
         </v-container>
@@ -47,6 +57,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+import { format } from 'date-fns';
 
 export default {
   props: {
@@ -66,10 +78,12 @@ export default {
   data() {
     return {
       activeTab: 'Geral',
+      menu: false,
+      formattedDate: '',
       personData: {
         Name: '',
         Cpf: '',
-        DateOfBirth: '',
+        DateOfBirth: new Date(),
         Active: '',
       },
     };
@@ -84,10 +98,48 @@ export default {
       },
     },
   },
+  watch: {
+    'personData.DateOfBirth': function (newDate, oldDate) {
+      if (newDate !== oldDate) {
+        this.menu = false;
+      }
+    }
+  },
   methods: {
-    save() {
-      // Lógica para salvar o cliente (adicionar ou editar)
+    async save() {
+      if (this.mode === 'add') {
+        await this.addPerson();
+      } else {
+        await this.editPerson();
+      }
       this.close();
+    },
+    async addPerson() {
+      try {
+        const response = await axios.post('/api/person', this.personData);
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async editPerson() {
+      try {
+        const response = await axios.put('/api/person/' + this.personData.id, this.personData);
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    formatDate(date) {
+      if (!date) return null;
+      const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+      return new Date(date).toLocaleDateString('pt-BR', options);
+    },
+    openDatePicker() {
+      this.menu = true;
+    },
+    closeDatePicker() {
+      this.menu = false;
     },
     close() {
       this.isOpen = false;

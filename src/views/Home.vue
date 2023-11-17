@@ -84,7 +84,7 @@
   <v-footer color="red darken-4" padless>
     <v-container fluid>
       <v-row no-gutters class="white--text align-center justify-center">
-        <v-col cols="12" md="1" class="my-2">
+        <v-col cols="12" md="2" class="my-2">
           <v-img :width="120" aspect-ratio="16/9" cover src="https://www.lar.ind.br/wp-content/themes/lar-by-housecricket/images/logo-footer.png"></v-img>
         </v-col>
         <v-col cols="12" md="2" class="my-2">
@@ -126,17 +126,7 @@
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      images: [
-        'http://www.lar.com.py/assets/images/banners/61f87c76492094867f69322f8fbe1609.png',
-        'http://www.lar.com.py/assets/images/banners/9bc30abb58103e054848989e2f4c0e68.png',
-        'http://www.lar.com.py/assets/images/banners/4938dfa7ae661d1e0e9d0ac4aad0b54a.png'
-      ]
-    };
-  }
-};
+
 </script>
 
 <style scoped>

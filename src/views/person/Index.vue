@@ -20,13 +20,10 @@
                 <thead>
                     <tr>
                         <th class="text-center">
-                            Id
-                        </th>
-                        <th class="text-left">
                             Nome
                         </th>
                         <th class="text-left">
-                            Cpf
+                            CPF
                         </th>
                         <th class="text-left">
                             Data de Nascimento
@@ -40,12 +37,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in filteredDesserts" :key="item.id">
+                    <tr v-for="item in filteredData" :key="item.id">
                         <td class="text-center">{{ item.id }}</td>
                         <td>{{ item.name }}</td>
-                        <td>{{ item.celular }}</td>
-                        <td>{{ item.cidade }}</td>
-                        <td>{{ item.cidade }}</td>
+                        <td>{{ item.cpf }}</td>
+                        <td>{{ item.dateBirthday }}</td>
+                        <td>{{ item.active }}</td>
                         <td>
                             <v-menu>
                                 <template #activator="{ props }">
@@ -81,6 +78,7 @@
 import { ref } from 'vue'
 import Dialog from './Dialog.vue';
 import ConfirmDeleteDialog from '@/components/dialogs/ConfirmDeleteDialog.vue';
+import axios from 'axios';
 
 const isDialogOpen = ref(false)
 const isDialogDeleteOpen = ref(false)
@@ -109,18 +107,19 @@ export default {
         ConfirmDeleteDialog
     },
     computed: {
-        filteredDesserts() {
-            return this.desserts.filter(dessert =>
-                dessert.name.toLowerCase().includes(this.filter.toLowerCase()) ||
-                dessert.id.toString().includes(this.filter) ||
-                dessert.celular.toLowerCase().includes(this.filter.toLowerCase()) ||
-                dessert.cidade.toLowerCase().includes(this.filter.toLowerCase())
+        filteredData() {
+            return this.persons.filter(persons =>
+                persons.name.toLowerCase().includes(this.filter.toLowerCase()) ||
+                persons.id.toString().includes(this.filter) ||
+                persons.celular.toLowerCase().includes(this.filter.toLowerCase()) ||
+                persons.cidade.toLowerCase().includes(this.filter.toLowerCase())
             );
         }
     },
     data() {
-        return {
-            mode: 'add',
+    return {
+      persons: [],
+      mode: 'add',
             itemToEdit: null,
             itemToDelete: null,
             isDialogOpen: false,
@@ -132,48 +131,17 @@ export default {
                     default: null
                 },
             },
-
-            desserts: [
-                {
-                    id: 1,
-                    name: 'Frozen Yogurt',
-                    celular: '(45) 9 984063065',
-                    cidade: 'Foz do Iguaçu'
-                },
-                {
-                    id: 1,
-                    name: 'Frozen Yogurt',
-                    celular: '(45) 9 984063065',
-                    cidade: 'Foz do Iguaçu'
-                },
-                {
-                    id: 1,
-                    name: 'Victor',
-                    celular: '(45) 9 984063065',
-                    cidade: 'Foz do Iguaçu'
-                },
-                {
-                    id: 1,
-                    name: 'Frozen Yogurt',
-                    celular: '(45) 9 984063065',
-                    cidade: 'Cascavel'
-                },
-                {
-                    id: 1,
-                    name: 'Frozen Yogurt',
-                    celular: '(45) 9 984063065',
-                    cidade: 'Foz do Iguaçu'
-                },
-                {
-                    id: 1,
-                    name: 'Frozen Yogurt',
-                    celular: '(45) 9 984063065',
-                    cidade: 'Foz do Iguaçu'
-                },
-            ],
-        }
-
-    },
+    };
+  },
+  mounted() {
+    axios.get('http://localhost:5017/api/person')
+      .then((response) => {
+        this.persons = response.data;
+      })
+      .catch((error) => {
+        console.error('Erro ao buscar dados:', error);
+      });
+  }
 }
 
 </script>
@@ -201,8 +169,6 @@ body,
 }
 
 .v-table {
-    /* flex: 1; */
-    /* overflow: auto; */
     max-height: 78vh;
     overflow-y: auto;
 }
