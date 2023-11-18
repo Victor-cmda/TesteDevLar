@@ -50,7 +50,7 @@
                                 <v-card>
                                     <v-list lines="true" nav>
                                         <v-list-item>
-                                            <v-btn @click="openEditDialog(item, mode)" prepend-icon="mdi-pencil"
+                                            <v-btn @click="openEditDialog(item)" prepend-icon="mdi-pencil"
                                                 variant="tonal" color="info">Editar</v-btn>
                                         </v-list-item>
                                         <v-list-item>

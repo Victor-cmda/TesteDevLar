@@ -1,5 +1,8 @@
 <template>
   <v-form ref="form" @submit.prevent="submitForm">
+    <v-overlay :model-value="overlay" class="align-center justify-center">
+      <v-progress-circular color="primary" indeterminate size="64"></v-progress-circular>
+    </v-overlay>
     <v-dialog v-model="isOpen" fullscreen transition="dialog-bottom-transition">
       <v-card>
 
@@ -65,10 +68,47 @@
                     <v-card-title>
                       <h3>Telefones</h3>
                     </v-card-title>
-
                     <v-card-title>
-                      <v-btn @click="" variant="tonal" color="primary">Adicionar</v-btn>
-                      <!-- <Dialog v-model="isDialogOpen" :item="itemToEdit" :mode="mode" @update-list="reloadList" /> -->
+                      <v-btn @click="openTelephonesAddDialog" variant="tonal" color="primary">Adicionar</v-btn>
+                      <v-dialog v-model="isTelephoneDialogOpen" transition="dialog-bottom-transition" width="auto">
+                        <template v-slot:default="{ isActive }">
+                          <v-card>
+                            <v-toolbar color="primary" title="Telefones disponíveis"></v-toolbar>
+                            <v-card-text>
+                              <v-table fixed-header>
+                                <thead>
+                                  <tr>
+                                    <th class="text-center">
+                                      Número
+                                    </th>
+                                    <th class="text-center">
+                                      Tipo Telefone
+                                    </th>
+                                    <th class="text-left actions-column">
+                                      Ações
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr v-for="telephone in telephonesWithoutUser" :key="telephone.id">
+                                    <td class="text-center">{{ telephone.number }}</td>
+                                    <td class="text-center">
+                                      {{ telephone.typeNumber == 1 ? 'Celular' : telephone.typeNumber == 2 ? 'Residencial'
+                                        : telephone.typeNumber == 3 ? 'Comercial' : '' }}
+                                    </td>
+                                    <td>
+                                      <v-checkbox v-model="selectedItems" :value="telephone"></v-checkbox>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </v-table>
+                            </v-card-text>
+                            <v-card-actions class="justify-end">
+                              <v-btn variant="text" color="primary" @click="insertTelephones">Inserir</v-btn>
+                            </v-card-actions>
+                          </v-card>
+                        </template>
+                      </v-dialog>
                     </v-card-title>
                   </div>
                   <v-card-text>
@@ -88,9 +128,9 @@
                       </thead>
                       <tbody>
                         <tr v-for="item in personData.telephones" :key="item.id">
-                          <td class="text-center">{{ item.id }}</td>
                           <td>{{ item.number }}</td>
-                          <td>{{ item.typeNumber }}</td>
+                          <td> {{ item.typeNumber == 1 ? 'Celular' : item.typeNumber == 2 ? 'Residencial' :
+                            item.typeNumber == 3 ? 'Comercial' : '' }}</td>
                           <td>
                             <v-menu>
                               <template #activator="{ props }">
@@ -100,13 +140,10 @@
                               </template>
                               <v-card>
                                 <v-list lines="true" nav>
-                                  <v-list-item>
-                                    <!-- <v-btn @click.stop="openConfirmDeleteDialog(item)" prepend-icon="mdi-cog-outline"
-                                      variant="tonal" color="error">
-                                      Excluir
-                                    </v-btn>
-                                    <ConfirmDeleteDialog v-model="isDialogDeleteOpen" @confirm="deleteItem(item)" /> -->
-                                  </v-list-item>
+                                  <v-btn @click.stop="deleteItem(item)" prepend-icon="mdi-delete" variant="tonal"
+                                    color="error">
+                                    Excluir
+                                  </v-btn>
                                 </v-list>
                               </v-card>
                             </v-menu>
@@ -148,7 +185,10 @@ export default {
     return {
       activeTab: 'Geral',
       menu: false,
+      isTelephoneDialogOpen: false,
       formattedDate: '',
+      telephonesWithoutUser: [],
+      overlay: false,
       personData: {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -160,6 +200,7 @@ export default {
 
         ]
       },
+      selectedItems: [],
       initialPersonData: {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -205,24 +246,51 @@ export default {
     }
   },
   methods: {
+    deleteItem(item) {
+      const index = this.personData.telephones.indexOf(item);
+      if (index > -1) {
+        this.personData.telephones.splice(index, 1);
+      }
+    },
+    insertTelephones() {
+      if (!Array.isArray(this.personData.telephones)) {
+        this.personData.telephones = [];
+      }
+
+      this.selectedItems.forEach(item => {
+        if (!this.personData.telephones.some(tel => tel.id === item.id)) {
+          this.personData.telephones.push(item);
+        }
+      });
+
+      this.selectedItems = [];
+      this.isTelephoneDialogOpen = false;
+    },
     async addPerson(personData) {
       try {
+        this.overlay = true;
         const response = await axios.post('http://localhost:5017/api/person', personData);
         console.log(response.data);
         this.$emit('update-list');
         this.close();
       } catch (error) {
         console.error(error);
+      } finally {
+        this.overlay = false;
       }
     },
     async editPerson(personData) {
+      debugger;
       try {
+        this.overlay = true;
         const response = await axios.put('http://localhost:5017/api/person/' + personData.id, personData);
         console.log(response.data);
         this.$emit('update-list');
         this.close();
       } catch (error) {
         console.error(error);
+      } finally {
+        this.overlay = false;
       }
     },
     formatDate(date) {
@@ -261,11 +329,21 @@ export default {
       cpf = cpf.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
       return cpf;
     },
-
     isValidField(fieldValue) {
       return fieldValue && fieldValue.trim() !== '';
     },
-
+    async openTelephonesAddDialog() {
+      this.overlay = true;
+      try {
+        const response = await axios.get('http://localhost:5017/api/telephone?filter=NoUser');
+        this.telephonesWithoutUser = response.data;
+      } catch (error) {
+        console.error('Erro ao recarregar a lista:', error);
+      } finally {
+        this.overlay = false;
+      }
+      this.isTelephoneDialogOpen = true;
+    },
     close() {
       this.isOpen = false;
       this.resetForm();

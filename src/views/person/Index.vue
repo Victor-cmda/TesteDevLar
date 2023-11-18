@@ -62,7 +62,7 @@
                                 <v-card>
                                     <v-list lines="true" nav>
                                         <v-list-item>
-                                            <v-btn @click="openEditDialog(item, mode)" prepend-icon="mdi-pencil"
+                                            <v-btn @click="openEditDialog(item)" prepend-icon="mdi-pencil"
                                                 variant="tonal" color="info">Editar</v-btn>
                                         </v-list-item>
                                         <v-list-item>
@@ -99,10 +99,24 @@ export default {
             this.mode = 'add';
             this.isDialogOpen = true;
         },
-        openEditDialog(item) {
-            this.mode = 'edit';
-            this.itemToEdit = JSON.parse(JSON.stringify(item));
-            this.isDialogOpen = true;
+        async getPersonDetails(id) {
+            try {
+                const response = await axios.get(`http://localhost:5017/api/person/${id}`);
+                return response.data;
+            } catch (error) {
+                console.error('Erro ao buscar detalhes da pessoa:', error);
+                return null;
+            }
+        },
+        async openEditDialog(person) {
+            this.overlay = true;
+            const personDetails = await this.getPersonDetails(person.id);
+            if (personDetails) {
+                this.itemToEdit = personDetails;
+                this.mode = 'edit';
+                this.isDialogOpen = true;
+            }
+            this.overlay = false;
         },
         openConfirmDeleteDialog(item) {
             this.itemToDelete = item;

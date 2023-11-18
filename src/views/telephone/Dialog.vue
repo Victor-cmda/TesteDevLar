@@ -1,5 +1,8 @@
 <template>
   <v-form ref="form" @submit.prevent="submitForm">
+    <v-overlay :model-value="overlay" class="align-center justify-center">
+      <v-progress-circular color="primary" indeterminate size="64"></v-progress-circular>
+    </v-overlay>
     <v-dialog v-model="isOpen" fullscreen transition="dialog-bottom-transition">
       <v-card>
 
@@ -30,8 +33,8 @@
                     Número
                   </template>
                   <v-card-text>
-                    <v-text-field label="Número" maxlength="15" :rules="[rules.required]"
-                      v-model="telephoneData.number" @blur="formatPhoneNumber"></v-text-field>
+                    <v-text-field label="Número" maxlength="15" :rules="[rules.required]" v-model="telephoneData.number"
+                      @blur="formatPhoneNumber"></v-text-field>
                   </v-card-text>
                 </v-card>
               </v-col>
@@ -80,6 +83,7 @@ export default {
       activeTab: 'Geral',
       menu: false,
       formattedDate: '',
+      overlay: false,
       telephoneData: {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -95,9 +99,9 @@ export default {
       rules: {
         required: value => !!value || 'Este campo é obrigatório.',
         phoneNumber: value => {
-        const pattern = /^\(\d{2}\) \d{4,5}-\d{4}$/;
-        return pattern.test(value) || 'Número de telefone inválido.';
-      },
+          const pattern = /^\(\d{2}\) \d{4,5}-\d{4}$/;
+          return pattern.test(value) || 'Número de telefone inválido.';
+        },
       }
     };
   },
@@ -121,16 +125,20 @@ export default {
   methods: {
     async addTelephone(telephoneData) {
       try {
+        this.overlay = true;
         const response = await axios.post('http://localhost:5017/api/telephone', telephoneData);
         console.log(response.data);
         this.$emit('update-list');
         this.close();
       } catch (error) {
         console.error(error);
+      } finally {
+        this.overlay = false;
       }
     },
     async editTelephone(telephoneData) {
       try {
+        this.overlay = true;
         const response = await axios.put('http://localhost:5017/api/telephone/' + telephoneData.id, telephoneData);
         console.log(response.data);
         this.$emit('update-list');
@@ -158,9 +166,9 @@ export default {
       let numbers = this.telephoneData.number.replace(/\D/g, '');
       let formattedNumber;
 
-      if (numbers.length <= 10) { 
+      if (numbers.length <= 10) {
         formattedNumber = numbers.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
-      } else { 
+      } else {
         formattedNumber = numbers.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
       }
 
