@@ -22,6 +22,11 @@ const routes = [
         name: 'Telephone',
         component: () => import('@/views/telephone/Index.vue'),
       },
+      {
+        path: 'login',
+        name: 'login',
+        component: () => import('@/views/login/Index.vue'),
+      },
     ],
   },
   {
@@ -33,6 +38,15 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
-})
+});
+
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = !!localStorage.getItem('userToken');
+  if (!isAuthenticated && to.name !== 'login') {
+    next({ name: 'login' });
+  } else {
+    next();
+  }
+});
 
 export default router
