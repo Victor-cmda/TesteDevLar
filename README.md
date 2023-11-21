@@ -1,69 +1,30 @@
-# essentials
+# Teste Lar Front-End
 
-## Project setup
+## Sobre o Projeto
+Este é o projeto front-end para a aplicação TesteLar, desenvolvido com Vue.js. Ele interage com a API do back-end .NET 7.0 para fornecer uma interface de usuário para autenticação e gerenciamento de telefones e pessoas.
 
-```
-# yarn
-yarn
+## Tecnologias Utilizadas
+- Vue.js
+- Vuetify para componentes de UI
+- Axios para requisições HTTP
+- Vue Router para roteamento
 
-# npm
-npm install
+## Funcionalidades
+- Tela de Login com autenticação JWT
+- Tela Home
+- Interface para cadastro e gerenciamento de telefones e pessoas
+- Proteção de rotas com autenticação
 
-# pnpm
-pnpm install
+## Pré-Requisitos
+Para executar este projeto, você precisará ter instalado:
+- [Node.js](https://nodejs.org/)
+- [Yarn](https://yarnpkg.com/) ou [npm](https://www.npmjs.com/)
 
-# bun
-bun install
-```
+## Configuração
+Siga estes passos para configurar o ambiente local:
 
-### Compiles and hot-reloads for development
+1. Clone o repositório:
+2. Navegue até a pasta do projeto e instale as dependências:
 
-```
-# yarn
-yarn dev
-
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# bun
-bun run dev
-```
-
-### Compiles and minifies for production
-
-```
-# yarn
-yarn build
-
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# bun
-bun run build
-```
-
-### Lints and fixes files
-
-```
-# yarn
-yarn lint
-
-# npm
-npm run lint
-
-# pnpm
-pnpm lint
-
-# bun
-bun run lint
-```
-
-### Customize configuration
-
-See [Configuration Reference](https://vitejs.dev/config/).
+Para instalar as dependências utilize o comando: yarn install
+Para executar localmente o projeto use o comando: yarn dev
